@@ -164,7 +164,7 @@ function Get-Tokens {
     $tokens.Add('tenantId', $tenantId )
     $tokens.Add('userId', $userId )
 	
-	$sparkType = 'hdinsight'
+    $sparkType = 'hdinsight'
     $keyvaultPrefix = 'keyvault'
 	$dataxJobTemplate = 'DataXDirect'
 	$dataxKafkaJobTemplate = 'kafkaDataXDirect'
@@ -179,7 +179,22 @@ function Get-Tokens {
 		$tokens.Add('databricksClusterNodeType', $databricksClusterNodeType)
 		$tokens.Add('databricksSku', $databricksSku)
 		$tokens.Add('dbResourceGroupName', $resourceGroupName)
+    } else {
+        if($HDInsightVersion -like '4*') {
+            $tokens.Add('HDInsightVersion', $HDInsightVersion)
+            $tokens.Add('enableHDInsightAutoScaling', $enableHDInsightAutoScaling)
+            if($enableHDInsightAutoScaling -eq 'y') {
+                $tokens.Add('minNodesForHDInsightAutoScaling', $minNodesForHDInsightAutoScaling)
+                $tokens.Add('maxNodesForHDInsightAutoScaling', $maxNodesForHDInsightAutoScaling)
+            } else {
+                $minNodesForHDInsightAutoScaling = $targetInstanceCountSparkWorkernode
+                $maxNodesForHDInsightAutoScaling = $targetInstanceCountSparkWorkernode
+                $tokens.Add('minNodesForHDInsightAutoScaling', $minNodesForHDInsightAutoScaling)
+                $tokens.Add('maxNodesForHDInsightAutoScaling', $maxNodesForHDInsightAutoScaling)
+            }
+        }
     }
+
 	$tokens.Add('sparkType', $sparkType)
 	$tokens.Add('keyvaultPrefix', $keyvaultPrefix)
 	$tokens.Add('dataxJobTemplate', $dataxJobTemplate)
@@ -217,6 +232,8 @@ function Get-Tokens {
     
     $tokens.Add('serviceAppId', $azureADApplicationConfiggenApplicationId )
     $tokens.Add('clientAppId', $azureADApplicationApplicationId )
+
+    $tokens.Add('azureADApplicationConfiggenResourceId', $azureADApplicationConfiggenResourceId )
 
     $aiKey = ''
     $appInsight = Get-AzureRmApplicationInsights -resourceGroupName $resourceGroupName -Name $appInsightsName -ErrorAction SilentlyContinue
@@ -843,8 +860,19 @@ if($sparkCreation -eq 'y') {
 
     $tokens = Get-Tokens
 	if ($useDatabricks -eq 'n') {
+
+        $sparkTemplate = "Spark-Template.json"
+        $sparkParameter = "Spark-parameter.json"
+
+        if ($HDInsightVersion -like '4*') {
+            $sparkTemplate = "Spark4-Template.json"
+            $sparkParameter = "Spark4-parameter.json"
+        }      
+
+        Write-Host "sparkTempalte: '$sparkTemplate' ; sparkParameter: '$sparkParameter'"
+
 		Write-Host -ForegroundColor Green "Estimated time to complete: 20 mins"
-		Deploy-Resources -templateName "Spark-Template.json" -paramName "Spark-parameter.json" -templatePath $templatePath -tokens $tokens
+		Deploy-Resources -templateName  $sparkTemplate -paramName $sparkParameter -templatePath $templatePath -tokens $tokens
 	}
 	else {
 		Write-Host -ForegroundColor Green "Estimated time to complete: 5 mins"
