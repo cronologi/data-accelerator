@@ -25,7 +25,10 @@
 			}
 		},
 		"sparkClusterVersion": {
-			"value": "3.6"
+			"value": "$HDInsightVersion"
+		},
+		"sparkComponentVersion": {
+			"value": "$sparkComponentVersion"
 		},
 		"sparkClusterWorkerNodeCount": {
 			"value": 3

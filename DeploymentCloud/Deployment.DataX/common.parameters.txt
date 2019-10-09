@@ -2,23 +2,24 @@
 
 # The tenant directoryId you want to sign in
 # You can get this from Azure portal through Azure Active Directory -> Properties -> Directory Id
-tenantId=
+tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47
 
 # The subscription id where the template will be deployed
-subscriptionId=
+subscriptionId=4ff1a3d2-f080-4683-ba45-9f8393e30f76
 
 # Name for Service AAD app. This application Id will be used as the Service Fabric ResourceId. 
 # Please specify here if you want to use a custom name.
 # Optional. Default value is "serviceapp-<product name>"
-# serviceAppName=
+
+serviceAppName=DataXDevServices
 
 # Name for Client AAD app. This application Id will be used for the web app.
 # Please specify here if you want to use a custom name.
 # Optional. Default value is "clientapp-<product name>"
-# clientAppName=
+clientAppName=DataXDevWeb
 
 # ResourceGroupName to generate resources 
-resourceGroupName=DataX
+resourceGroupName=HDI36NoAutoScale
 
 # y if you want to run spark jobs on Databricks, n for running jobs on HDinsight 
 useDatabricks=n
@@ -31,6 +32,21 @@ databricksClusterNodeType=Standard_DS3_v2
 
 #Databricks SKU
 databricksSku=premium
+
+# HDInsight cluster version. Default to 3.6
+HDInsightVersion=3.6
+
+# The spark version of the HDInsight. For HDInsight4.0, it can be 2.4 or 2.3. For HDInsight3.6, it should be 2.3
+sparkComponentVersion=2.3
+
+# y if you want to enable HDInsight4.0 cluster auto-scaling 
+enableHDInsightAutoScaling=n
+
+# HDInsight minimal nodes 
+minNodesForHDInsightAutoScaling=3
+
+# HDInsight maximal nodes 
+maxNodesForHDInsightAutoScaling=5
 
 # y if you want to deploy Kafka sample, n otherwise
 # This will deploy the Kafka specific samples and resources such as HDinsight Kafka and EventHub Kafka  
@@ -132,7 +148,7 @@ vmSizeSparkWorkernode=Standard_D3_V2
 # Default value is 3
 targetInstanceCountSparkWorkernode=3
 
-# Redis Cache Size
+# Redis Cache 
 # Default value is Basic_C_0
 # For details, please refer to https://azure.microsoft.com/en-us/pricing/details/cache/
 redisCacheSize=Basic_C_0
@@ -179,7 +195,7 @@ serviceSecretPrefix=configgen
 clientSecretPrefix=web
 
 # FeedUrl for the nuget packages
-feedUrl=https://api.nuget.org/v3/index.json
+feedUrl=https://devdiv.pkgs.visualstudio.com/_packaging/DataX-Test/nuget/v3/index.json
 
 # Service Fabric Cluster Name. Optional. 
 # Please specify here if you want to use a custom name.
