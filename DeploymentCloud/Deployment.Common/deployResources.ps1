@@ -183,10 +183,8 @@ function Get-Tokens {
         $tokens.Add('HDInsightVersion', $HDInsightVersion)
         $tokens.Add('sparkComponentVersion', $sparkComponentVersion)
         $tokens.Add('enableHDInsightAutoScaling', $enableHDInsightAutoScaling)
-        if($enableHDInsightAutoScaling -eq 'y') {
-            $tokens.Add('minNodesForHDInsightAutoScaling', $minNodesForHDInsightAutoScaling)
-            $tokens.Add('maxNodesForHDInsightAutoScaling', $maxNodesForHDInsightAutoScaling)
-        }
+        $tokens.Add('minNodesForHDInsightAutoScaling', $minNodesForHDInsightAutoScaling)
+        $tokens.Add('maxNodesForHDInsightAutoScaling', $maxNodesForHDInsightAutoScaling)
     }
 
 	$tokens.Add('sparkType', $sparkType)
@@ -862,7 +860,6 @@ if($sparkCreation -eq 'y') {
         $version = [int]$version
         if ($version -ge 4 -and $enableHDInsightAutoScaling -eq 'y') {
             $sparkTemplate = "Spark-AutoScale-Template.json"
-            $sparkParameter = "Spark-AutoScale-parameter.json"
         }      
         Write-Host "sparkTempalte: '$sparkTemplate' ; sparkParameter: '$sparkParameter'"
 

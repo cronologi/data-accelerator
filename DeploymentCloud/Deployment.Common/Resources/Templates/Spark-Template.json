@@ -62,8 +62,14 @@
 			"type": "String"
 		},
 		"sparkManagedIdentity": {	
-			"type": "string"	
+			"type": "string"
 		},
+		"minNodesForHDInsightAutoScaling": {
+            "type": "int"
+        },
+        "maxNodesForHDInsightAutoScaling": {
+            "type": "int"
+        },
 		"minInstanceCountSparkHeadnode": {
 			"type": "int"
 		},
