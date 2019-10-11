@@ -183,10 +183,8 @@ function Get-Tokens {
         $tokens.Add('HDInsightVersion', $HDInsightVersion)
         $tokens.Add('sparkComponentVersion', $sparkComponentVersion)
         $tokens.Add('enableHDInsightAutoScaling', $enableHDInsightAutoScaling)
-        if($enableHDInsightAutoScaling -eq 'y') {
-            $tokens.Add('minNodesForHDInsightAutoScaling', $minNodesForHDInsightAutoScaling)
-            $tokens.Add('maxNodesForHDInsightAutoScaling', $maxNodesForHDInsightAutoScaling)
-        }
+        $tokens.Add('minNodesForHDInsightAutoScaling', $minNodesForHDInsightAutoScaling)
+        $tokens.Add('maxNodesForHDInsightAutoScaling', $maxNodesForHDInsightAutoScaling)
     }
 
 	$tokens.Add('sparkType', $sparkType)
@@ -848,31 +846,28 @@ if($resourceCreation -eq 'y') {
     Deploy-Resources -templateName "Resource-Template.json" -paramName "Resource-parameter.json"  -templatePath $templatePath -tokens $tokens
 }
 
-if($sparkCreation -eq 'y') {
+if ($sparkCreation -eq 'y') {
     Write-Host -ForegroundColor Green "Deploying resources (2/16 steps): A spark cluster will be deployed"   
     Setup-SecretsForSpark
 
     $tokens = Get-Tokens
-	if ($useDatabricks -eq 'n') {
+    if ($useDatabricks -eq 'n') {
 
         $sparkTemplate = "Spark-Template.json"
         $sparkParameter = "Spark-parameter.json"
 
-        $version = ($HDInsightVersion -split '\.')[0]
-        $version = [int]$version
-        if ($version -ge 4 -and $enableHDInsightAutoScaling -eq 'y') {
+        if ($enableHDInsightAutoScaling -eq 'y') {
             $sparkTemplate = "Spark-AutoScale-Template.json"
-            $sparkParameter = "Spark-AutoScale-parameter.json"
         }      
         Write-Host "sparkTempalte: '$sparkTemplate' ; sparkParameter: '$sparkParameter'"
 
-		Write-Host -ForegroundColor Green "Estimated time to complete: 20 mins"
-		Deploy-Resources -templateName  $sparkTemplate -paramName $sparkParameter -templatePath $templatePath -tokens $tokens
-	}
-	else {
-		Write-Host -ForegroundColor Green "Estimated time to complete: 5 mins"
-		Deploy-Resources -templateName "Databricks-Template.json" -paramName "Databricks-Parameter.json" -templatePath $templatePath -tokens $tokens
-	}
+        Write-Host -ForegroundColor Green "Estimated time to complete: 20 mins"
+        Deploy-Resources -templateName  $sparkTemplate -paramName $sparkParameter -templatePath $templatePath -tokens $tokens
+    }
+    else {
+        Write-Host -ForegroundColor Green "Estimated time to complete: 5 mins"
+        Deploy-Resources -templateName "Databricks-Template.json" -paramName "Databricks-Parameter.json" -templatePath $templatePath -tokens $tokens
+    }
 }
 
 # Preparing certs...

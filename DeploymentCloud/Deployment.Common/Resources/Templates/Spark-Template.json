@@ -61,8 +61,14 @@
 		"storageAccounts_spark_name": {
 			"type": "String"
 		},
-		"sparkManagedIdentity": {	
-			"type": "string"	
+		"sparkManagedIdentity": {
+			"type": "string"
+		},
+		"minNodesForHDInsightAutoScaling": {
+			"type": "int"
+		},
+		"maxNodesForHDInsightAutoScaling": {
+			"type": "int"
 		},
 		"minInstanceCountSparkHeadnode": {
 			"type": "int"
